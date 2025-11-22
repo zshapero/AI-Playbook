@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apply Governance Differently Based on Where AI Lives</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #19374f;
+            color: white;
+            min-height: 100vh;
+            padding: 30px 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated background elements */
+        .bg-decoration {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .circuit-line {
+            position: absolute;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.2), transparent);
+            height: 2px;
+            animation: pulse 3s infinite, slideAcross 8s infinite linear;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.8; }
+        }
+
+        @keyframes slideAcross {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(200vw);
+            }
+        }
+
+        .container {
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Page System */
+        .page {
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-title {
+            font-family: 'Roboto', sans-serif;
+            font-size: 2.8rem;
+            font-weight: 300;
+            color: white;
+            margin-bottom: 15px;
+            line-height: 1.2;
+        }
+
+        .page-title .highlight {
+            color: #ff7e21;
+            font-weight: 700;
+        }
+
+        .page-subtitle {
+            font-family: Arial, sans-serif;
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.6;
+        }
+
+        /* Infographic Home Page */
+        .infographic-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            text-align: center;
+            margin-bottom: 35px;
+            padding: 30px 40px;
+            background: rgba(255, 126, 33, 0.05);
+            border-radius: 20px;
+            border: 2px solid rgba(255, 126, 33, 0.2);
+        }
+
+        .hero-text {
+            font-family: Arial, sans-serif;
+            font-size: 1.2rem;
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.95);
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Layer Structure - Horizontal Layout */
+        .pyramid-container {
+            max-width: 1400px;
+            margin: 60px auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+
+        .pyramid-layer {
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 0.8s ease-out backwards;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 30px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            text-align: center;
+        }
+
+        .pyramid-layer:nth-child(1) { 
+            animation-delay: 0.1s;
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .pyramid-layer:nth-child(2) { 
+            animation-delay: 0.2s;
+            background: rgba(255, 255, 255, 0.08);
+        }
+        
+        .pyramid-layer:nth-child(3) { 
+            animation-delay: 0.3s;
+            background: rgba(255, 255, 255, 0.11);
+        }
+
+        .layer-image-placeholder {
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            background: rgba(255, 255, 255, 0.02);
+            border: 2px dashed rgba(255, 126, 33, 0.3);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+            margin: 20px 0;
+        }
+
+        .layer-image-placeholder > * {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .layer-placeholder-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .layer-image-placeholder:hover {
+            border-color: rgba(255, 126, 33, 0.6);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .layer-placeholder-icon {
+            font-size: 2.5rem;
+            color: rgba(255, 126, 33, 0.4);
+        }
+
+        .layer-placeholder-text {
+            font-family: 'Roboto', sans-serif;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.4);
+            font-weight: 500;
+        }
+
+        .layer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            width: 100%;
+        }
+
+        .pyramid-layer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 126, 33, 0.15), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .pyramid-layer:hover::before {
+            left: 100%;
+        }
+
+        .pyramid-layer:hover {
+            border-color: #ff7e21;
+            transform: scale(1.02);
+            box-shadow: 0 20px 50px rgba(255, 126, 33, 0.4);
+            z-index: 10;
+        }
+
+        .layer-number {
+            font-family: 'Roboto', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: #ff7e21;
+            margin-bottom: 12px;
+            line-height: 1;
+            position: relative;
+            z-index: 1;
+        }
+
+        .layer-title {
+            font-family: 'Roboto', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 10px;
+            line-height: 1.3;
+            position: relative;
+            z-index: 1;
+        }
+
+        .layer-examples {
+            font-family: Arial, sans-serif;
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 1.5;
+            position: relative;
+            z-index: 1;
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+
+        .layer-explore {
+            font-family: 'Roboto', sans-serif;
+            font-size: 1rem;
+            color: #00ffff;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: auto;
+            padding-top: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .explore-arrow {
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+
+        .pyramid-layer:hover .explore-arrow {
+            transform: translateX(5px);
+        }
+
+        /* Detail Pages */
+        .detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            gap: 30px;
+        }
+
+        .nav-wrapper {
+            flex: 0 0 200px;
+        }
+
+        .detail-title-section {
+            flex: 1;
+            text-align: center;
+        }
+
+        .detail-number {
+            font-family: 'Roboto', sans-serif;
+            font-size: 5rem;
+            font-weight: 700;
+            color: #ff7e21;
+            line-height: 1;
+            margin-bottom: 15px;
+        }
+
+        .detail-title {
+            font-family: 'Roboto', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 300;
+            color: white;
+            line-height: 1.3;
+        }
+
+        .navigation {
+            padding: 15px 25px;
+            background: rgba(0, 255, 255, 0.1);
+            border: 2px solid rgba(0, 255, 255, 0.2);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.9);
+            text-align: center;
+        }
+
+        .navigation:hover {
+            background: rgba(0, 255, 255, 0.15);
+            border-color: rgba(0, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .nav-left {
+            text-align: left;
+        }
+
+        .nav-right {
+            text-align: right;
+        }
+
+        /* Content Section */
+        .content-section {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .content-text {
+            font-family: Arial, sans-serif;
+            font-size: 1.15rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.95);
+            margin-bottom: 30px;
+        }
+
+        .content-list {
+            list-style: none;
+            margin: 30px 0;
+            padding: 0;
+        }
+
+        .content-list li {
+            font-family: Arial, sans-serif;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.95);
+            margin-bottom: 15px;
+            padding: 15px 20px 15px 50px;
+            position: relative;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+        }
+
+        .content-list li::before {
+            content: '•';
+            position: absolute;
+            left: 20px;
+            color: #ff7e21;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .content-list li strong {
+            color: #ff7e21;
+            font-weight: 700;
+        }
+
+        /* Section Headers */
+        .section-header {
+            font-family: 'Roboto', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ff7e21;
+            margin: 40px 0 25px 0;
+        }
+
+        .subsection-header {
+            font-family: 'Roboto', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.95);
+            margin: 30px 0 20px 0;
+        }
+
+        /* Highlight Box */
+        .highlight-box {
+            background: rgba(0, 255, 255, 0.1);
+            border: 2px solid rgba(0, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 35px 40px;
+            margin: 35px 0;
+        }
+
+        .highlight-text {
+            font-family: Arial, sans-serif;
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.95);
+            text-align: center;
+        }
+
+        .highlight-text .orange {
+            color: #ff7e21;
+            font-weight: 700;
+        }
+
+        /* Image Placeholder */
+        .image-placeholder {
+            background: rgba(255, 255, 255, 0.02);
+            border: 2px dashed rgba(255, 126, 33, 0.3);
+            border-radius: 15px;
+            padding: 80px 40px;
+            margin: 30px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px;
+            transition: all 0.3s ease;
+        }
+
+        .image-placeholder:hover {
+            border-color: rgba(255, 126, 33, 0.6);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .placeholder-icon {
+            font-size: 4rem;
+            color: rgba(255, 126, 33, 0.4);
+            margin-bottom: 20px;
+        }
+
+        .placeholder-text {
+            font-family: 'Roboto', sans-serif;
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        /* Questions Section */
+        .questions-section {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .questions-title {
+            font-family: 'Roboto', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 15px;
+        }
+
+        .question-item {
+            font-family: Arial, sans-serif;
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.9);
+            padding-left: 25px;
+            margin-bottom: 12px;
+            position: relative;
+        }
+
+        .question-item::before {
+            content: '?';
+            position: absolute;
+            left: 0;
+            color: #00ffff;
+            font-weight: bold;
+            font-size: 1.3rem;
+        }
+
+        .question-item:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Risk Badge */
+        .risk-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-family: 'Roboto', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin: 20px 0;
+        }
+
+        .risk-low {
+            background: rgba(0, 255, 100, 0.15);
+            border: 2px solid rgba(0, 255, 100, 0.4);
+            color: rgba(0, 255, 100, 1);
+        }
+
+        .risk-medium {
+            background: rgba(255, 200, 0, 0.15);
+            border: 2px solid rgba(255, 200, 0, 0.4);
+            color: rgba(255, 200, 0, 1);
+        }
+
+        .risk-high {
+            background: rgba(255, 100, 100, 0.15);
+            border: 2px solid rgba(255, 100, 100, 0.4);
+            color: rgba(255, 100, 100, 1);
+        }
+
+        /* Info Boxes */
+        .info-box {
+            background: rgba(0, 255, 255, 0.05);
+            border-left: 4px solid rgba(0, 255, 255, 0.6);
+            padding: 25px 30px;
+            margin: 30px 0;
+            border-radius: 10px;
+        }
+
+        .info-box-title {
+            font-family: 'Roboto', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: rgba(0, 255, 255, 1);
+            margin-bottom: 15px;
+        }
+
+        .info-box-text {
+            font-family: Arial, sans-serif;
+            font-size: 1.05rem;
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .pyramid-container {
+                grid-template-columns: 1fr;
+                max-width: 700px;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .detail-header {
+                flex-direction: column;
+            }
+
+            .nav-wrapper {
+                width: 100%;
+            }
+
+            .navigation {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .layer-title {
+                font-size: 1.3rem;
+            }
+
+            .detail-number {
+                font-size: 3.5rem;
+            }
+
+            .detail-title {
+                font-size: 1.8rem;
+            }
+
+            .pyramid-container {
+                max-width: 100%;
+            }
+
+            .pyramid-layer {
+                padding: 30px 25px;
+            }
+
+            .layer-number {
+                font-size: 2.5rem;
+            }
+
+            .layer-image-placeholder {
+                max-width: 100%;
+            }
+
+            .layer-placeholder-icon {
+                font-size: 2rem;
+            }
+
+            .layer-placeholder-text {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated background -->
+    <div class="bg-decoration">
+        <div class="circuit-line" style="top: 20%; width: 60%;"></div>
+        <div class="circuit-line" style="top: 50%; width: 80%; animation-delay: 1s;"></div>
+        <div class="circuit-line" style="top: 80%; width: 50%; animation-delay: 2s;"></div>
+    </div>
+
+    <div class="container">
+        <!-- HOME PAGE -->
+        <div class="page active" id="home">
+            <div class="infographic-container">
+                <div class="page-header">
+                    <h1 class="page-title">
+                        Apply <span class="highlight">Governance Differently</span><br>
+                        Based on Where AI Lives
+                    </h1>
+                </div>
+
+                <div class="hero-section">
+                    <p class="hero-text">
+                        Not all AI requires the same level of governance. The controls you need depend on where the AI lives in your technology stack.
+                    </p>
+                </div>
+
+                <div class="pyramid-container">
+                    <div class="pyramid-layer" onclick="showPage('layer1')">
+                        <div class="layer-content">
+                            <div class="layer-number">1</div>
+                            <div class="layer-image-placeholder">
+                                <div class="layer-placeholder-content">
+                                    <div class="layer-placeholder-icon">🖼️</div>
+                                    <div class="layer-placeholder-text">Image Placeholder</div>
+                                </div>
+                            </div>
+                            <h3 class="layer-title">Trusted Applications With Built-In AI</h3>
+                            <p class="layer-examples">
+                                (e.g. Workday, Salesforce, ServiceNow)
+                            </p>
+                            <div class="layer-explore">Explore Layer 1 <span class="explore-arrow">→</span></div>
+                        </div>
+                    </div>
+
+                    <div class="pyramid-layer" onclick="showPage('layer2')">
+                        <div class="layer-content">
+                            <div class="layer-number">2</div>
+                            <div class="layer-image-placeholder">
+                                <div class="layer-placeholder-content">
+                                    <div class="layer-placeholder-icon">🖼️</div>
+                                    <div class="layer-placeholder-text">Image Placeholder</div>
+                                </div>
+                            </div>
+                            <h3 class="layer-title">AI in the Data and Analytics Layer</h3>
+                            <p class="layer-examples">
+                                (e.g. Snowflake Cortex, Databricks)
+                            </p>
+                            <div class="layer-explore">Explore Layer 2 <span class="explore-arrow">→</span></div>
+                        </div>
+                    </div>
+
+                    <div class="pyramid-layer" onclick="showPage('layer3')">
+                        <div class="layer-content">
+                            <div class="layer-number">3</div>
+                            <div class="layer-image-placeholder">
+                                <div class="layer-placeholder-content">
+                                    <div class="layer-placeholder-icon">🖼️</div>
+                                    <div class="layer-placeholder-text">Image Placeholder</div>
+                                </div>
+                            </div>
+                            <h3 class="layer-title">Custom AI, LLM, and Agent Systems</h3>
+                            <p class="layer-examples">
+                                (e.g. OpenAI, RAG, internal copilots)
+                            </p>
+                            <div class="layer-explore">Explore Layer 3 <span class="explore-arrow">→</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LAYER 1 PAGE -->
+        <div class="page" id="layer1">
+            <div class="detail-header">
+                <div class="nav-wrapper">
+                    <div class="navigation nav-left" onclick="showPage('home')">← Return Home</div>
+                </div>
+                <div class="detail-title-section">
+                    <div class="detail-number">1</div>
+                    <h2 class="detail-title">Trusted Applications With Built-In AI</h2>
+                </div>
+                <div class="nav-wrapper">
+                    <div class="navigation nav-right" onclick="showPage('layer2')">Next: Layer 2 →</div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <div class="highlight-box">
+                    <p class="highlight-text">
+                        Modern examples of trusted applications include <span class="orange">Workday, Salesforce, and ServiceNow.</span>
+                    </p>
+                </div>
+
+                <div class="image-placeholder">
+                    <div class="placeholder-icon">🖼️</div>
+                    <div class="placeholder-text">LANDSCAPE IMAGE PLACEHOLDER</div>
+                </div>
+
+                <p class="content-text">
+                    When you're working with AI embedded in vendor applications, you rarely govern the model itself. Instead, you are governing how your company uses it. This significantly lowers the inherent risk and complexity of governance. In this case, your controls are:
+                </p>
+
+                <ul class="content-list">
+                    <li>Contract language</li>
+                    <li>Enable/disable features by policy</li>
+                    <li>Access rights (which roles see AI suggestions)</li>
+                    <li>Documentation of business impact</li>
+                    <li>Audit logs for decisions influenced by AI</li>
+                    <li>Acceptable use policies</li>
+                </ul>
+
+                <p class="content-text">
+                    AI built into enterprise applications should fit within existing application governance practices. Ensure contractual language addresses the need to protect your company's data— including prompts submitted to AI systems and responses to those prompts. Confirm that accurate access controls are in place, as employees often overshare content, and AI may surface or reference confidential information if it isn't protected.
+                </p>
+
+                <p class="content-text">
+                    Educate your employees on responsible AI use. Make it clear they are ultimately accountable for the output they share, whether or not they use AI. Update your company's Acceptable Use Policies, if needed, to reinforce that AI is meant to assist—but accountability remains with the employee.
+                </p>
+
+                <div class="highlight-box">
+                    <p class="highlight-text">
+                        Treat AI like the power tools in your garage—<span class="orange">safe when used correctly, dangerous if mishandled.</span> As long as employees understand their responsibility, no committees or bureaucracy are required—just explicit human accountability.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- LAYER 2 PAGE -->
+        <div class="page" id="layer2">
+            <div class="detail-header">
+                <div class="nav-wrapper">
+                    <div class="navigation nav-left" onclick="showPage('layer1')">← Previous: Layer 1</div>
+                </div>
+                <div class="detail-title-section">
+                    <div class="detail-number">2</div>
+                    <h2 class="detail-title">AI in the Data and Analytics Layer</h2>
+                </div>
+                <div class="nav-wrapper">
+                    <div class="navigation nav-right" onclick="showPage('layer3')">Next: Layer 3 →</div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <div class="highlight-box">
+                    <p class="highlight-text">
+                        Modern examples of these tools include <span class="orange">Snowflake Cortex and Databricks.</span>
+                    </p>
+                </div>
+
+                <div class="image-placeholder">
+                    <div class="placeholder-icon">🖼️</div>
+                    <div class="placeholder-text">LANDSCAPE IMAGE PLACEHOLDER</div>
+                </div>
+
+                <p class="content-text">
+                    When you aggregate data from multiple sources for analytics, risk and complexity increase because insights begin influencing decisions. You are no longer relying on access controls in source systems like Salesforce or Microsoft 365—you now need to consider additional controls:
+                </p>
+
+                <ul class="content-list">
+                    <li>Data handling standards (already in data governance)</li>
+                    <li>Privacy assessments (already in data governance)</li>
+                    <li>Data lineage (already in data governance)</li>
+                    <li>Peer reviews for AI-generated insights (AI governance)</li>
+                    <li>Manual approval for automated decisions (AI governance)</li>
+                    <li>Fairness and bias checks (AI governance)</li>
+                </ul>
+
+                <p class="content-text">
+                    This is where data governance and AI governance must integrate. When AI output drives decisions, continuous monitoring and explainability are essential. For anything that changes behavior broadly—such as pricing, staffing, or customer targeting—ensure someone accountable carefully reviews it.
+                </p>
+            </div>
+        </div>
+
+        <!-- LAYER 3 PAGE -->
+        <div class="page" id="layer3">
+            <div class="detail-header">
+                <div class="nav-wrapper">
+                    <div class="navigation nav-left" onclick="showPage('layer2')">← Previous: Layer 2</div>
+                </div>
+                <div class="detail-title-section">
+                    <div class="detail-number">3</div>
+                    <h2 class="detail-title">Custom AI, LLM, and Agent Systems</h2>
+                </div>
+                <div class="nav-wrapper">
+                    <div class="navigation nav-right" onclick="showPage('home')">Return Home</div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <div class="highlight-box">
+                    <p class="highlight-text">
+                        Modern examples include <span class="orange">OpenAI, RAG, and internal copilots.</span>
+                    </p>
+                </div>
+
+                <div class="image-placeholder">
+                    <div class="placeholder-icon">🖼️</div>
+                    <div class="placeholder-text">LANDSCAPE IMAGE PLACEHOLDER</div>
+                </div>
+
+                <p class="content-text">
+                    When you plan to build custom AI capabilities, risk grows along with the need for a full governance stack. Outputs can vary by prompt and context, models may hallucinate, and behavior can change over time. These challenges require additional controls:
+                </p>
+
+                <ul class="content-list">
+                    <li>Prompt filtering and safety guardrails</li>
+                    <li>Human-in-the-loop for high-impact actions</li>
+                    <li>Output logging and traceability</li>
+                    <li>Clear rollback and shutdown procedures</li>
+                </ul>
+
+                <p class="content-text">
+                    This is your highest-risk scenario and requires the strictest governance. Carefully inventory and manage each AI instance, including its interactions with other agents and tools.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+
+            // Show selected page
+            document.getElementById(pageId).classList.add('active');
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Add subtle animation to circuit lines
+        document.addEventListener('DOMContentLoaded', function() {
+            const circuitLines = document.querySelectorAll('.circuit-line');
+            circuitLines.forEach((line, index) => {
+                line.style.animationDelay = `${index * 0.5}s`;
+            });
+        });
+    </script>
+</body>
+</html>
