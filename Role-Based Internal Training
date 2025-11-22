@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Role-Based Internal Training</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #19374f;
+            color: white;
+            min-height: 100vh;
+            padding: 60px 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        .bg-decoration {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .circuit-line {
+            position: absolute;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.2), transparent);
+            height: 2px;
+            animation: pulse 3s infinite, slideAcross 8s infinite linear;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.8; }
+        }
+
+        @keyframes slideAcross {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(200vw); }
+        }
+
+        .circuit-line:nth-child(1) { top: 15%; width: 60%; left: -10%; }
+        .circuit-line:nth-child(2) { top: 45%; width: 70%; left: -15%; animation-delay: 2s; }
+        .circuit-line:nth-child(3) { top: 75%; width: 50%; left: -5%; animation-delay: 4s; }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header Section */
+        .header-section {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .main-title {
+            font-family: 'Roboto', sans-serif;
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            font-weight: 300;
+            color: white;
+            animation: fadeInDown 0.6s ease-out;
+        }
+
+        .main-title .highlight {
+            color: #ff7e21;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-family: Arial, sans-serif;
+            font-size: 1.2rem;
+            color: white;
+            opacity: 0.9;
+            line-height: 1.8;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            animation: fadeInDown 0.8s ease-out 0.2s both;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 4x2 Grid Layout */
+        .roles-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        /* Role Card */
+        .role-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 2px solid rgba(255, 126, 33, 0.25);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .role-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #ff7e21, #00ffff);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: 2;
+        }
+
+        .role-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(0, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 15px 40px rgba(0, 255, 255, 0.2);
+        }
+
+        .role-card:hover::before {
+            opacity: 1;
+        }
+
+        /* Image Placeholder */
+        .role-image {
+            width: 100%;
+            height: 220px;
+            background: linear-gradient(135deg, rgba(255, 126, 33, 0.2), rgba(0, 255, 255, 0.2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 2px solid rgba(255, 126, 33, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .role-image::before {
+            content: 'IMAGE PLACEHOLDER';
+            position: absolute;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .role-card:hover .role-image {
+            transform: scale(1.05);
+        }
+
+        /* Content Area */
+        .role-content {
+            padding: 25px;
+        }
+
+        .role-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 12px;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+        }
+
+        .role-description {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Graphic Take-Away Block */
+        .graphic-takeaway {
+            background: rgba(25, 55, 79, 0.4);
+            backdrop-filter: blur(10px);
+            border-left: 6px solid #ff7e21;
+            border-radius: 0 15px 15px 0;
+            padding: 35px 45px 35px 35px;
+            position: relative;
+            overflow: hidden;
+            margin-top: 50px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), 
+                        inset 0 1px 0 rgba(0, 255, 255, 0.1);
+        }
+
+        .graphic-takeaway::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 1px;
+            background: linear-gradient(180deg, 
+                transparent, 
+                rgba(0, 255, 255, 0.5) 50%, 
+                transparent);
+            margin-left: 6px;
+        }
+
+        .graphic-takeaway::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 6px;
+            height: 40px;
+            background: rgba(0, 255, 255, 0.6);
+            transform: translateY(-50%);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+            animation: pulse 2s infinite;
+        }
+
+        .takeaway-content {
+            text-align: left;
+            position: relative;
+            z-index: 1;
+        }
+
+        .takeaway-type {
+            font-family: 'Roboto', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #ff7e21;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: inline-block;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .takeaway-type::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, #ff7e21, transparent);
+        }
+
+        .takeaway-text {
+            font-family: Arial, sans-serif;
+            font-size: 1.15rem;
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.9);
+            margin: 0;
+            padding-left: 20px;
+            border-left: 3px solid rgba(0, 255, 255, 0.2);
+        }
+
+        /* Responsive */
+        @media (max-width: 1400px) {
+            .roles-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .roles-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 2.5rem;
+            }
+
+            .subtitle {
+                font-size: 1.1rem;
+            }
+
+            .roles-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .role-image {
+                height: 200px;
+            }
+
+            .graphic-takeaway {
+                padding: 30px 35px 30px 25px;
+            }
+
+            .takeaway-text {
+                font-size: 1.05rem;
+                padding-left: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-decoration">
+        <div class="circuit-line"></div>
+        <div class="circuit-line"></div>
+        <div class="circuit-line"></div>
+    </div>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="header-section">
+            <h1 class="main-title"><span class="highlight">Role-Based</span> Internal Training</h1>
+            <p class="subtitle">
+                To maximize adoption and impact, training should be tailored to the unique needs and roles within your company. Below are examples of roles and associated AI uses that may be relevant:
+            </p>
+        </div>
+
+        <!-- Roles Grid - 4x2 -->
+        <div class="roles-grid">
+            <!-- Marketing -->
+            <div class="role-card">
+                <div class="role-image"></div>
+                <div class="role-content">
+                    <h3 class="role-title">Marketing</h3>
+                    <p class="role-description">
+                        Using AI for campaign optimization, customer segmentation, and content personalization
+                    </p>
+                </div>
+            </div>
+
+            <!-- Service Technicians -->
+            <div class="role-card">
+                <div class="role-image"></div>
+                <div class="role-content">
+                    <h3 class="role-title">Service Technicians</h3>
+                    <p class="role-description">
+                        Leveraging AI for predictive maintenance, troubleshooting, and workflow automation
+                    </p>
+                </div>
+            </div>
+
+            <!-- CSRs -->
+            <div class="role-card">
+                <div class="role-image"></div>
+                <div class="role-content">
+                    <h3 class="role-title">Customer Service Representatives</h3>
+                    <p class="role-description">
+                        Applying AI to enhance customer interactions, automate routine inquiries, and flag churn risks
+                    </p>
+                </div>
+            </div>
+
+            <!-- Network Managers -->
+            <div class="role-card">
+                <div class="role-image"></div>
+                <div class="role-content">
+                    <h3 class="role-title">Network Managers</h3>
+                    <p class="role-description">
+                        Using AI for network monitoring, anomaly detection, and capacity planning
+                    </p>
+                </div>
+            </div>
+
+            <!-- IT -->
+            <div class="role-card">
+                <div class="role-image"></div>
+                <div class="role-content">
+                    <h3 class="role-title">IT</h3>
+                    <p class="role-description">
+                        Managing AI integrations, ensuring data readiness, and maintaining security and compliance
+                    </p>
+                </div>
+            </div>
+
+            <!-- AI Champion -->
+            <div class="role-card">
+                <div class="role-image"></div>
+                <div class="role-content">
+                    <h3 class="role-title">The AI Champion</h3>
+                    <p class="role-description">
+                        Driving adoption, measuring impact, and fostering a culture of innovation
+                    </p>
+                </div>
+            </div>
+
+            <!-- Technical Administrators -->
+            <div class="role-card">
+                <div class="role-image"></div>
+                <div class="role-content">
+                    <h3 class="role-title">Technical Administrators</h3>
+                    <p class="role-description">
+                        Overseeing AI deployment, integration, and ongoing support
+                    </p>
+                </div>
+            </div>
+
+            <!-- Executive Leaders -->
+            <div class="role-card">
+                <div class="role-image"></div>
+                <div class="role-content">
+                    <h3 class="role-title">Executive Leaders</h3>
+                    <p class="role-description">
+                        Engaging with the board, setting up AI committees, and championing responsible AI adoption at the highest level
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Graphic Take-Away Block -->
+        <div class="graphic-takeaway">
+            <div class="takeaway-content">
+                <span class="takeaway-type">Key Insight</span>
+                <p class="takeaway-text">
+                    Successful AI adoption requires role-specific training that addresses the unique needs, workflows, and challenges of each team. By tailoring your training approach to these distinct roles, you ensure that every member of your organization can leverage AI effectively in their daily work, driving both individual productivity and organizational transformation.
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
